@@ -1,0 +1,65 @@
+version: "3.9"
+services:
+  todo-application:
+    image: node:latest
+    container_name: todo-application
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../todo-application:/app
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    working_dir: /app
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "10"
+    command: "npm start"
+
+  todo-backend:
+    image: node:latest
+    container_name: todo-backend
+    stdin_open: true
+    tty: true
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../todo-backend:/app
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    working_dir: /app
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "10"
+    command: "npm start"
+    networks: ["backend"]
+  
+  db:
+    image: postgres
+    container_name: todo-db
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: YTOqQVlv
+      POSTGRES_DB: todo
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - '/home/howkins/postgre:/var/lib/postgresql/data'
+    networks: ["backend"]
+
+networks:
+  backend:
+    name: backend
