@@ -73,3 +73,8 @@ sudo docker compose up -d
 sudo docker exec -i todo-backend npm i -g dotenv-cli
 sudo docker exec -i todo-backend npm run migrate:postgres
 ```
+
+## Integration tests
+```
+sudo docker exec -i todo-backend npm run test
+```
